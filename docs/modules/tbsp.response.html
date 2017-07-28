@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Turbospoon &middot; Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Turbospoon</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tbsp.data.html">tbsp.data</a></li>
+  <li><strong>tbsp.response</strong></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/errors.RouteNotFoundError.html">errors.RouteNotFoundError</a></li>
+  <li><a href="../classes/errors.StaticFileNotFoundError.html">errors.StaticFileNotFoundError</a></li>
+  <li><a href="../classes/App.html">App</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/Turbospoon.md.html">Turbospoon</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tbsp.response</code></h1>
+<p>Module for Turbospoon data serialization and MIME type assistance</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#html_response">html_response (content, status, headers)</a></td>
+	<td class="summary">Generate an HTML response with proper MIME type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#json_response">json_response (content, status, headers)</a></td>
+	<td class="summary">Generate a JSON serialized response from Lua table with proper MIME type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#yaml_response">yaml_response (content, status, headers)</a></td>
+	<td class="summary">Generate a YAML serialized response from Lua table with proper MIME type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#toml_response">toml_response (content, status, headers)</a></td>
+	<td class="summary">Generate a TOML serialized response from Lua table with proper MIME type</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "html_response"></a>
+    <strong>html_response (content, status, headers)</strong>
+    </dt>
+    <dd>
+    Generate an HTML response with proper MIME type
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">content</span>
+            <span class="types"><span class="type">body</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Numeric string, HTTP status code
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         Optional HTTP headers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "json_response"></a>
+    <strong>json_response (content, status, headers)</strong>
+    </dt>
+    <dd>
+    Generate a JSON serialized response from Lua table with proper MIME type
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">content</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Numeric string, HTTP status code
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         Optional HTTP headers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "yaml_response"></a>
+    <strong>yaml_response (content, status, headers)</strong>
+    </dt>
+    <dd>
+    Generate a YAML serialized response from Lua table with proper MIME type
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">content</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Numeric string, HTTP status code
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         Optional HTTP headers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "toml_response"></a>
+    <strong>toml_response (content, status, headers)</strong>
+    </dt>
+    <dd>
+    Generate a TOML serialized response from Lua table with proper MIME type
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">content</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Numeric string, HTTP status code
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         Optional HTTP headers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-07-27 23:02:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

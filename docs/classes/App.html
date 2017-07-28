@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Turbospoon &middot; Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Turbospoon</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/errors.RouteNotFoundError.html">errors.RouteNotFoundError</a></li>
+  <li><a href="../classes/errors.StaticFileNotFoundError.html">errors.StaticFileNotFoundError</a></li>
+  <li><strong>App</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tbsp.data.html">tbsp.data</a></li>
+  <li><a href="../modules/tbsp.response.html">tbsp.response</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/Turbospoon.md.html">Turbospoon</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>App</code></h1>
+<p>Turbospoon: A MoonScript web framework</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: RyanSquared <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;v&#97;&#x6e;&#100;&#x6f;&#114;&#x32;&#48;&#x31;2&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;">&#x76;&#97;&#x6e;&#100;&#x6f;&#114;&#x32;0&#49;&#x32;&#64;&#x67;&#109;&#x61;&#105;&#x6c;.&#99;&#x6f;&#109;</a></li>
+    </ul>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#App\new">App\new (opts)</a></td>
+	<td class="summary">Spawn a new tbsp</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\set">App\set (key, value)</a></td>
+	<td class="summary">Call a handler for a key, then set an appropriate config value</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\register_handler">App\register_handler (key, callback)</a></td>
+	<td class="summary">Register a callback to handle configuration changes</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\bind">App\bind (host, port, tls)</a></td>
+	<td class="summary">Map server to an address and port</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\handle_error">App\handle_error (err, request)</a></td>
+	<td class="summary">Handle errors raised by @process</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\route">App\route (path, handler)</a></td>
+	<td class="summary">Subscribe a callback to requests, first-come last-serve</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\error_handler">App\error_handler (err, handler)</a></td>
+	<td class="summary">Subscribe a callback to handle errors</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\flush_response">App\flush_response (request, body, status, headers)</a></td>
+	<td class="summary">Flush values when given a body, status code, and headers</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\process">App\process (stream)</a></td>
+	<td class="summary">Find page handler for a URL and process a request</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#App\run">App\run ()</a></td>
+	<td class="summary">Start listening to incoming requests</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "App\new"></a>
+    <strong>App\new (opts)</strong>
+    </dt>
+    <dd>
+    Spawn a new tbsp
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">opts</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+<ul>
+    <li><code>opts.debug_level: number = 0</code> - Debug levels for Lumberjack logging</li>
+    <li><code>opts.logger_enabled: bool = true</code> - Enable logging</li>
+    <li><code>opts.cq: userdata = cqueues.new()</code> - cqueues controller</li>
+</ul>
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">app = tbsp.App()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "App\set"></a>
+    <strong>App\set (key, value)</strong>
+    </dt>
+    <dd>
+    Call a handler for a key, then set an appropriate config value
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">value</span>
+         Value
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">app\set <span class="string">"config_option"</span>, <span class="string">"config_value"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "App\register_handler"></a>
+    <strong>App\register_handler (key, callback)</strong>
+    </dt>
+    <dd>
+    Register a callback to handle configuration changes
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">callback</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">app\register_handler <span class="string">"config_option"</span>, (...)-&gt; <span class="global">print</span> ...</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "App\bind"></a>
+    <strong>App\bind (host, port, tls)</strong>
+    </dt>
+    <dd>
+    Map server to an address and port
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">host</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Hostname for server to listen on. Set to '0.0.0.0' or
+ '::' to listen on all available interfaces, '127.0.0.1' to listen on the
+ local-only interface, or a custom interface
+        </li>
+        <li><span class="parameter">port</span>
+            <span class="types"><span class="type">number</span></span>
+         Port for server to listen on. Most systems require
+ this value to be above 1024. Use an iptables redirect to use ports below
+ 1024.
+        </li>
+        <li><span class="parameter">tls</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether or not to use TLS for connections, defaults
+ to @config.tls
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\handle_error"></a>
+    <strong>App\handle_error (err, request)</strong>
+    </dt>
+    <dd>
+    Handle errors raised by @process
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">err</span>
+            <span class="types"><span class="type">object</span></span>
+         Error object, should implement __tostring
+        </li>
+        <li><span class="parameter">request</span>
+            <span class="types"><span class="type">Request</span></span>
+         Request object
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\route"></a>
+    <strong>App\route (path, handler)</strong>
+    </dt>
+    <dd>
+    Subscribe a callback to requests, first-come last-serve
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Lua pattern for matching URL paths
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         Function for processing requests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\error_handler"></a>
+    <strong>App\error_handler (err, handler)</strong>
+    </dt>
+    <dd>
+    Subscribe a callback to handle errors
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">err</span>
+            <span class="types"><span class="type">object</span></span>
+         Error class to track
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         Function for processing errors
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\flush_response"></a>
+    <strong>App\flush_response (request, body, status, headers)</strong>
+    </dt>
+    <dd>
+    Flush values when given a body, status code, and headers
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">request</span>
+            <span class="types"><span class="type">Request</span></span>
+         Request object
+        </li>
+        <li><span class="parameter">body</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         (Optional) body to send to client
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         (Optional) HTTP status to send to client
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><span class="type">http.headers</span></span>
+         (Optional) HTTP headers to send to client
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\process"></a>
+    <strong>App\process (stream)</strong>
+    </dt>
+    <dd>
+    Find page handler for a URL and process a request
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stream</span>
+            <span class="types"><span class="type">cqueues.socket</span></span>
+         Incoming stream to handle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "App\run"></a>
+    <strong>App\run ()</strong>
+    </dt>
+    <dd>
+    Start listening to incoming requests
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-07-27 23:02:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
