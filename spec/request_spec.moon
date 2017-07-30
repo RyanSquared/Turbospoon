@@ -1,4 +1,4 @@
-Request = require "tbsp.data.request"
+import Request from require "tbsp.data"
 
 http =
 	headers: require "http.headers"

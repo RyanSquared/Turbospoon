@@ -17,7 +17,8 @@ local Signer
 Signer = require("bassoon").Signer
 local Logger
 Logger = require("lumberjack").Logger
-local Request = require("tbsp.data.request")
+local Request
+Request = require("tbsp.data").Request
 local html_response
 html_response = require("tbsp.response").html_response
 local StaticFileNotFoundError, RouteNotFoundError

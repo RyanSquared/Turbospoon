@@ -18,7 +18,7 @@ import random_key from require "bassoon.util"
 import Signer from require "bassoon"
 import Logger from require "lumberjack"
 
-Request = require "tbsp.data.request"
+import Request from require "tbsp.data"
 import html_response from require "tbsp.response"
 import StaticFileNotFoundError, RouteNotFoundError from require "tbsp.errors"
 

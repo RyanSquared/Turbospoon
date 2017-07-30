@@ -10,3 +10,5 @@ class Request
 		@stream = stream
 		@headers = {k, v for k, v in stream\get_headers()\each!}
 		@method = @headers[':status']
+
+return {:Request}

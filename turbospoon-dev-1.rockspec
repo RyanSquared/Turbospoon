@@ -13,7 +13,7 @@ dependencies = {
 	"bassoon";
 	"cereal";
 	"lumberjack";
-	"lua-http";
+	"http";
 }
 
 build = {
@@ -25,6 +25,6 @@ build = {
 		["tbsp.errors"] = "tbsp/errors/init.lua";
 		["tbsp.errors.route_not_found"] = "tbsp/errors/route_not_found.lua";
 		["tbsp.errors.static_file_not_found"] = "tbsp/errors/static_file_not_found.lua";
-		["tbsp.data.request"] = "tbsp/data/request.lua";
+		["tbsp.data"] = "tbsp/data.lua";
 	};
 }
