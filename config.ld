@@ -8,5 +8,9 @@ style = 'docs/style'
 topics = {
 	'.topics/Turbospoon.md';
 }
+file = {
+	'tbsp';
+	exclude = {'tbsp/errors/init.moon'}
+}
 all = true
 format = 'markdown'
