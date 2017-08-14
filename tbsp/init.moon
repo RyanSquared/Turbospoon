@@ -15,7 +15,7 @@ openssl =
 	x509: require "openssl.x509"
 
 import random_key from require "bassoon.util"
-import Signer from require "bassoon"
+import JWTSerializer from require "bassoon.jwt"
 import Logger from require "lumberjack"
 
 import Request from require "tbsp.data"
@@ -39,10 +39,8 @@ class App
 			debug_level: opts.debug_level or 0
 			enabled: opts.logger_enabled
 		@logger\info "Initializing new application"
-		@logger\debug 1, "Generating random key"
-		@secret_key = random_key!
-		@logger\debug 1, "Done generating random key"
-		@signer = Signer @secret_key
+		@logger\debug 1, "Generating JWT wtih random key"
+		@jwt = JWTSerializer!
 		@config =
 			tls: false
 			static_dir: "static"
@@ -62,7 +60,6 @@ class App
 				return content
 			else -- file opening failed, 404
 				error(StaticFileNotFoundError(filename, request))
-		@logger\debug 2, "Done generating routes and error handlers"
 
 	--- Call a handler for a key, then set an appropriate config value
 	-- @tparam string key
@@ -169,11 +166,13 @@ class App
 	--- Find page handler for a URL and process a request
 	-- @tparam cqueues.socket stream Incoming stream to handle
 	process: (stream)=>
-		request = Request(stream)
+		request = Request(stream, self)
 		ok, err = pcall ->
-			path = request.headers[':path']
+			path = request.headers\get ":path"
 			for route in *@routes
 				if path\match route.path
+					-- ::TODO:: get data from route.handler(), add JWT to the
+					-- cookies, then flush response
 					@flush_response request, route.handler(request
 						path\match route.path)
 					break
@@ -188,8 +187,8 @@ class App
 
 App\register_handler "certfile", (certfile)=>
 	if file = io.open certfile
-		@tls_ctx = context.new "TLS", true if not @tls_ctx
-		@tls_ctx\setCertificate x509.new(file\read "a"), "PEM"
+		@tls_ctx = openssl.context.new "TLS", true if not @tls_ctx
+		@tls_ctx\setCertificate openssl.x509.new(file\read "a"), "PEM"
 		-- ::TODO:: implement other formats than PEM
 		@config.tls = true
 	else
@@ -197,8 +196,8 @@ App\register_handler "certfile", (certfile)=>
 
 App\register_handler "keyfile", (keyfile)=>
 	if file = io.open keyfile
-		@tls_ctx = context.new "TLS", true if not @tls_ctx
-		@tls_ctx\setPrivateKey pkey.new(file\read "a"), "PEM"
+		@tls_ctx = openssl.context.new "TLS", true if not @tls_ctx
+		@tls_ctx\setPrivateKey openssl.pkey.new(file\read "a"), "PEM"
 		@config.tls = true
 	else
 		error "Key file not found: #{keyfile}"

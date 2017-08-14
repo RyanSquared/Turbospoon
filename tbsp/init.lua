@@ -13,8 +13,8 @@ local openssl = {
 }
 local random_key
 random_key = require("bassoon.util").random_key
-local Signer
-Signer = require("bassoon").Signer
+local JWTSerializer
+JWTSerializer = require("bassoon.jwt").JWTSerializer
 local Logger
 Logger = require("lumberjack").Logger
 local Request
@@ -119,9 +119,9 @@ do
       return request.stream:write_chunk(tostring(body), true)
     end,
     process = function(self, stream)
-      local request = Request(stream)
+      local request = Request(stream, self)
       local ok, err = pcall(function()
-        local path = request.headers[':path']
+        local path = request.headers:get(":path")
         local _list_0 = self.routes
         for _index_0 = 1, #_list_0 do
           local route = _list_0[_index_0]
@@ -151,10 +151,8 @@ do
         enabled = opts.logger_enabled
       })
       self.logger:info("Initializing new application")
-      self.logger:debug(1, "Generating random key")
-      self.secret_key = random_key()
-      self.logger:debug(1, "Done generating random key")
-      self.signer = Signer(self.secret_key)
+      self.logger:debug(1, "Generating JWT wtih random key")
+      self.jwt = JWTSerializer()
       self.config = {
         tls = false,
         static_dir = "static"
@@ -169,7 +167,7 @@ do
       self.errorhandlers = setmetatable({ }, {
         __index = App.errorhandlers
       })
-      self:route("^/static/(.+)", function(request, requested_file)
+      return self:route("^/static/(.+)", function(request, requested_file)
         local filename = "./" .. tostring(self.config.static_dir) .. "/" .. tostring(requested_file)
         do
           local file = io.open("./" .. tostring(self.config.static_dir) .. "/" .. tostring(filename))
@@ -182,7 +180,6 @@ do
           end
         end
       end)
-      return self.logger:debug(2, "Done generating routes and error handlers")
     end,
     __base = _base_0,
     __name = "App"
@@ -207,9 +204,9 @@ App:register_handler("certfile", function(self, certfile)
     local file = io.open(certfile)
     if file then
       if not self.tls_ctx then
-        self.tls_ctx = context.new("TLS", true)
+        self.tls_ctx = openssl.context.new("TLS", true)
       end
-      self.tls_ctx:setCertificate(x509.new(file:read("a")), "PEM")
+      self.tls_ctx:setCertificate(openssl.x509.new(file:read("a")), "PEM")
       self.config.tls = true
     else
       return error("Certificate file not found: " .. tostring(certfile))
@@ -221,9 +218,9 @@ App:register_handler("keyfile", function(self, keyfile)
     local file = io.open(keyfile)
     if file then
       if not self.tls_ctx then
-        self.tls_ctx = context.new("TLS", true)
+        self.tls_ctx = openssl.context.new("TLS", true)
       end
-      self.tls_ctx:setPrivateKey(pkey.new(file:read("a")), "PEM")
+      self.tls_ctx:setPrivateKey(openssl.pkey.new(file:read("a")), "PEM")
       self.config.tls = true
     else
       return error("Key file not found: " .. tostring(keyfile))
