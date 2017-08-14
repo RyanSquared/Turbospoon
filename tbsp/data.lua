@@ -1,20 +1,44 @@
+local http = {
+  cookies = require("http.cookies")
+}
 local Request
 do
   local _class_0
   local _base_0 = { }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
-    __init = function(self, stream)
+    __init = function(self, stream, tbsp_app)
       assert(stream)
+      assert(tbsp_app)
+      self.app = tbsp_app
       self.stream = stream
-      do
-        local _tbl_0 = { }
-        for k, v in stream:get_headers():each() do
-          _tbl_0[k] = v
+      self.headers = stream:get_headers()
+      self.method = self.headers:get(":status")
+      for header, value in self.headers:each() do
+        if header == "cookie" then
+          local cookies = http.cookies.parse_cookies(value)
+          if not self.cookies then
+            do
+              local _tbl_0 = { }
+              for _index_0 = 1, #cookies do
+                local cookie = cookies[_index_0]
+                _tbl_0[cookie[1]] = cookie[2]
+              end
+              self.cookies = _tbl_0
+            end
+          else
+            for _index_0 = 1, #cookies do
+              local cookie = cookies[_index_0]
+              local key
+              key, value = cookie[1], cookie[2]
+              self.cookies[key] = value
+            end
+          end
         end
-        self.headers = _tbl_0
       end
-      self.method = self.headers[':status']
+      if self.cookies and self.cookies.session then
+        self.session = self.app.jwt:decode(self.cookies.session)
+      end
     end,
     __base = _base_0,
     __name = "Request"
