@@ -8,9 +8,6 @@ describe "tbsp.App", ->
 	it "forms an application correctly", ->
 		app = App logger_enabled: false
 		assert app.logger
-		assert app.secret_key
-		assert.same "string", type(app.secret_key)
-		assert.same 24, #app.secret_key
 		assert.same {tls: false, static_dir: "static"}, app.config
 		assert.same {}, app.servers
 		assert app.cq
