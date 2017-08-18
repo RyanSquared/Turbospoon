@@ -2,6 +2,9 @@ local cqueues = setmetatable({ }, {
   __index = require("cqueues")
 })
 cqueues.socket = require("cqueues.socket")
+local tbsp = {
+  Blueprint = require("tbsp.blueprint")
+}
 local http = {
   headers = require("http.headers"),
   server = require("http.server")
@@ -30,6 +33,7 @@ local App
 do
   local _class_0
   local default_headers
+  local _parent_0 = tbsp.Blueprint
   local _base_0 = {
     logger = Logger({
       debug_level = 2,
@@ -70,13 +74,13 @@ do
         local cls = err.__class
         while cls do
           if self.errorhandlers[cls] then
-            self:flush_response(request, self.errorhandlers[cls](self, err))
+            request:write_response(self.errorhandlers[cls](self, err))
             return 
           end
           cls = cls.__parent
         end
       end
-      return self:flush_response(request, html_response(tostring(err), 500))
+      return request:write_response(html_response(tostring(err), 500))
     end,
     route = function(self, path, handler)
       self.logger:debug(1, "Registering route %q", path)
@@ -89,35 +93,6 @@ do
       self.logger:debug(1, "Registering error handler %s", err.__name or err)
       self.errorhandlers[err] = handler
     end,
-    flush_response = function(self, request, body, status, headers)
-      if body == nil then
-        body = ""
-      end
-      local response_headers = http.headers.new()
-      for k, v in pairs(default_headers) do
-        self.logger:debug(3, "Setting default header %q = %q", k, v)
-        response_headers:upsert(k, v)
-      end
-      if headers then
-        for k, v in pairs(headers) do
-          self.logger:debug(2, "Upserting header %q = %q", k, v)
-          response_headers:upsert(k, v)
-        end
-      end
-      if status then
-        self.logger:debug(1, "Upserting status to %s", status)
-        response_headers:upsert(":status", tostring(status))
-      end
-      local is_head = request.headers[':method'] == "HEAD"
-      self.logger:debug(1, "Sending headers for %s", tostring(request))
-      request.stream:write_headers(response_headers, is_head)
-      if is_head then
-        self.logger:debug(2, "Not sending body - Client requested HEAD")
-        return 
-      end
-      self.logger:debug(1, "Sending body for %s", tostring(request))
-      return request.stream:write_chunk(tostring(body), true)
-    end,
     process = function(self, stream)
       local request = Request(stream, self)
       local ok, err = pcall(function()
@@ -126,7 +101,7 @@ do
         for _index_0 = 1, #_list_0 do
           local route = _list_0[_index_0]
           if path:match(route.path) then
-            self:flush_response(request, route.handler(request, path:match(route.path)))
+            request:write_response(route.handler(request, path:match(route.path)))
             break
           end
         end
@@ -141,11 +116,13 @@ do
     end
   }
   _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
   _class_0 = setmetatable({
     __init = function(self, opts)
       if opts == nil then
         opts = { }
       end
+      _class_0.__parent.__init(self)
       self.logger = Logger({
         debug_level = opts.debug_level or 0,
         enabled = opts.logger_enabled
@@ -182,9 +159,20 @@ do
       end)
     end,
     __base = _base_0,
-    __name = "App"
+    __name = "App",
+    __parent = _parent_0
   }, {
-    __index = _base_0,
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
     __call = function(cls, ...)
       local _self_0 = setmetatable({}, _base_0)
       cls.__init(_self_0, ...)
@@ -197,6 +185,9 @@ do
     ["content-type"] = "text/plain",
     [":status"] = "200"
   }
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
   App = _class_0
 end
 App:register_handler("certfile", function(self, certfile)

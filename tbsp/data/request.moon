@@ -1,6 +1,6 @@
 --- Data classes module
 -- @author RyanSquared <vandor2012@gmail.com>
--- @classmod tbsp.data.Request
+-- @classmod data.Request
 
 http =
 	cookies: require "http.cookies"

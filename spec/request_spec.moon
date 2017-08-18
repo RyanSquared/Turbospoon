@@ -13,7 +13,7 @@ class MockStream
 	populate: (session)=>
 		-- give some completely valid headers
 		@headers\upsert ":path", "/test.html"
-		@headers\upsert ":status", "200"
+		@headers\upsert ":method", "GET"
 		@headers\upsert "content-type", "text/html"
 		@headers\upsert "cookie", "random_key=value"
 		@headers\append "cookie", "key1=val1; key2=val2"
@@ -29,7 +29,7 @@ describe "tbsp.data.request", ->
 		stream = MockStream session
 		headers = http.headers.new!
 		headers\upsert ":path", "/test.html"
-		headers\upsert ":status", "200"
+		headers\upsert ":method", "GET"
 		headers\upsert "content-type", "text/html"
 		headers\upsert "cookie", "random_key=value"
 		headers\append "cookie", "key1=val1; key2=val2"
@@ -43,7 +43,7 @@ describe "tbsp.data.request", ->
 				key1: "val1"
 				key2: "val2"
 				:session
-			method: "200"
+			method: "GET"
 			session: a: "b"
 
 		assert.same test_response, Request stream, app
