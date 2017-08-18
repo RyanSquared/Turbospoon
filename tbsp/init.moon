@@ -5,6 +5,9 @@
 cqueues = setmetatable {}, __index: require "cqueues"
 cqueues.socket = require "cqueues.socket"
 
+tbsp =
+	Blueprint: require "tbsp.blueprint"
+
 http =
 	headers: require "http.headers"
 	server: require "http.server"
@@ -22,7 +25,7 @@ import Request from require "tbsp.data"
 import html_response from require "tbsp.response"
 import StaticFileNotFoundError, RouteNotFoundError from require "tbsp.errors"
 
-class App
+class App extends tbsp.Blueprint
 	logger: Logger debug_level: 2, enabled: false
 
 	handlers: {}
@@ -35,6 +38,7 @@ class App
 	-- - `opts.cq: userdata = cqueues.new()` - cqueues controller
 	-- @usage app = tbsp.App()
 	new: (opts = {})=>
+		super!
 		@logger = Logger
 			debug_level: opts.debug_level or 0
 			enabled: opts.logger_enabled
@@ -112,10 +116,10 @@ class App
 			cls = err.__class
 			while cls
 				if @errorhandlers[cls]
-					@flush_response request, @errorhandlers[cls](self, err)
+					request\write_response @errorhandlers[cls](self, err)
 					return
 				cls = cls.__parent
-		@flush_response request, html_response(tostring(err), 500)
+		request\write_response html_response(tostring(err), 500)
 
 	--- Subscribe a callback to requests, first-come last-serve
 	-- @tparam string path Lua pattern for matching URL paths
@@ -135,34 +139,6 @@ class App
 		["content-type"]: "text/plain"
 		[":status"]: "200"
 
-	--- Flush values when given a body, status code, and headers
-	-- @tparam Request request Request object
-	-- @tparam string body (Optional) body to send to client
-	-- @tparam string status (Optional) HTTP status to send to client
-	-- @tparam http.headers headers (Optional) HTTP headers to send to client
-	flush_response: (request, body = "", status, headers)=>
-		response_headers = http.headers.new!
-		for k, v in pairs default_headers
-			@logger\debug 3, "Setting default header %q = %q", k, v
-			response_headers\upsert k, v
-		if headers
-			for k, v in pairs headers
-				@logger\debug 2, "Upserting header %q = %q", k, v
-				response_headers\upsert k, v
-
-		if status
-			@logger\debug 1, "Upserting status to %s", status
-			response_headers\upsert ":status", tostring(status)
-
-		is_head = request.headers[':method'] == "HEAD"
-		@logger\debug 1, "Sending headers for %s", tostring request
-		request.stream\write_headers response_headers, is_head
-		if is_head
-			@logger\debug 2, "Not sending body - Client requested HEAD"
-			return
-		@logger\debug 1, "Sending body for %s", tostring request
-		request.stream\write_chunk tostring(body), true
-	
 	--- Find page handler for a URL and process a request
 	-- @tparam cqueues.socket stream Incoming stream to handle
 	process: (stream)=>
@@ -173,13 +149,13 @@ class App
 				if path\match route.path
 					-- ::TODO:: get data from route.handler(), add JWT to the
 					-- cookies, then flush response
-					@flush_response request, route.handler(request
+					request\write_response route.handler(request,
 						path\match route.path)
 					break
 
 			error RouteNotFoundError(path, request)
 		if not ok
-			@handle_error(err, request)
+			@handle_error err, request
 	
 	--- Start listening to incoming requests
 	run: =>
