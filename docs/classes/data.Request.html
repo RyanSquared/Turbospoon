@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Turbospoon &middot; Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Turbospoon</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Blueprint.html">Blueprint</a></li>
+  <li><strong>data.Request</strong></li>
+  <li><a href="../classes/App.html">App</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tbsp.response.html">tbsp.response</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/Turbospoon.md.html">Turbospoon</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>data.Request</code></h1>
+<p>Data classes module</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: RyanSquared <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;v&#97;&#x6e;&#100;&#x6f;&#114;&#x32;&#48;&#x31;2&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;">&#x76;&#97;&#x6e;&#100;&#x6f;&#114;&#x32;0&#49;&#x32;&#64;&#x67;&#109;&#x61;&#105;&#x6c;.&#99;&#x6f;&#109;</a></li>
+    </ul>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#data.Request\new">data.Request\new (stream, tbsp_app)</a></td>
+	<td class="summary">Return a new Request container</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data.Request\make_session_cookie">data.Request\make_session_cookie (cookie, age)</a></td>
+	<td class="summary">Create session cookies and set it as a header</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data.Request\write_headers">data.Request\write_headers (status, headers)</a></td>
+	<td class="summary">Send HTTP headers to the client</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data.Request\write_body">data.Request\write_body (text)</a></td>
+	<td class="summary">Send text as the body of the message</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#data.Request\write_response">data.Request\write_response (text, status, headers)</a></td>
+	<td class="summary">Send HTTP headers and body text at the same time</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "data.Request\new"></a>
+    <strong>data.Request\new (stream, tbsp_app)</strong>
+    </dt>
+    <dd>
+    Return a new Request container
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">stream</span>
+            <span class="types"><span class="type">http.stream</span></span>
+         lua-http server -> client stream
+        </li>
+        <li><span class="parameter">tbsp_app</span>
+            <span class="types"><a class="type" href="../classes/App.html#">App</a></span>
+         Turbospoon app
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "data.Request\make_session_cookie"></a>
+    <strong>data.Request\make_session_cookie (cookie, age)</strong>
+    </dt>
+    <dd>
+    Create session cookies and set it as a header
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cookie</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         JSON data for baked cookie
+        </li>
+        <li><span class="parameter">age</span>
+            <span class="types"><span class="type">number</span></span>
+         Age for cookie (default 28 days)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "data.Request\write_headers"></a>
+    <strong>data.Request\write_headers (status, headers)</strong>
+    </dt>
+    <dd>
+    Send HTTP headers to the client
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">status</span>
+            <span class="types"><span class="type">number</span></span>
+         HTTP status code
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><span class="type">http.headers</span></span>
+         Optional headers to send to client
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "data.Request\write_body"></a>
+    <strong>data.Request\write_body (text)</strong>
+    </dt>
+    <dd>
+    Send text as the body of the message
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "data.Request\write_response"></a>
+    <strong>data.Request\write_response (text, status, headers)</strong>
+    </dt>
+    <dd>
+    Send HTTP headers and body text at the same time
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><span class="type">number</span></span>
+         HTTP status
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><span class="type">http.headers</span></span>
+         HTTP headers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-08-17 21:22:59 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
