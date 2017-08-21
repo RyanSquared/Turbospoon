@@ -21,7 +21,7 @@ import random_key from require "bassoon.util"
 import JWTSerializer from require "bassoon.jwt"
 import Logger from require "lumberjack"
 
-import Request from require "tbsp.data"
+import Request, Response from require "tbsp.data"
 import html_response from require "tbsp.response"
 import StaticFileNotFoundError, RouteNotFoundError from require "tbsp.errors"
 
@@ -38,7 +38,7 @@ class App extends tbsp.Blueprint
 	-- - `opts.cq: userdata = cqueues.new()` - cqueues controller
 	-- @usage app = tbsp.App()
 	new: (opts = {})=>
-		super!
+		super "/"
 		@logger = Logger
 			debug_level: opts.debug_level or 0
 			enabled: opts.logger_enabled
@@ -53,10 +53,10 @@ class App extends tbsp.Blueprint
 
 		@logger\debug 2, "Generating routes and error handlers"
 		@routes = {}
-		@handlers = setmetatable {}, __index: App.handlers
 		@errorhandlers = setmetatable {}, __index: App.errorhandlers
-		
-		@route "^/static/(.+)", (request, requested_file)->
+		@handlers = setmetatable {}, __index: App.handlers
+
+		@route "/static/(.+)", (request, requested_file)->
 			filename = "./#{@config.static_dir}/#{requested_file}"
 			if file = io.open "./#{@config.static_dir}/#{filename}"
 				content = file\read "a"
@@ -75,7 +75,7 @@ class App extends tbsp.Blueprint
 			@handlers[key](self, value)
 		@logger\debug 1, "Setting key %s to %s", key, value
 		@config[key] = value
-	
+
 	--- Register a callback to handle configuration changes
 	-- @tparam string key
 	-- @tparam function callback
@@ -109,31 +109,18 @@ class App extends tbsp.Blueprint
 
 	--- Handle errors raised by @process
 	-- @tparam object err Error object, should implement __tostring
-	-- @tparam Request request Request object
-	handle_error: (err, request)=>
+	-- @tparam Request request
+	-- @tparam Response response
+	handle_error: (err, request, response)=>
 		@logger\debug 2, "Error found: %s - processing for %s", err, request
 		if type(err) == "table"
 			cls = err.__class
 			while cls
 				if @errorhandlers[cls]
-					request\write_response @errorhandlers[cls](self, err)
+					@errorhandlers[cls](response, err, self)
 					return
 				cls = cls.__parent
-		request\write_response html_response(tostring(err), 500)
-
-	--- Subscribe a callback to requests, first-come last-serve
-	-- @tparam string path Lua pattern for matching URL paths
-	-- @tparam function handler Function for processing requests
-	route: (path, handler)=>
-		@logger\debug 1, "Registering route %q", path
-		table.insert @routes, 1, {:path, :handler}
-
-	--- Subscribe a callback to handle errors
-	-- @tparam object err Error class to track
-	-- @tparam function handler Function for processing errors
-	error_handler: (err, handler)=>
-		@logger\debug 1, "Registering error handler %s", err.__name or err
-		@errorhandlers[err] = handler
+		response\write_response html_response(tostring(err), 500)
 
 	default_headers =
 		["content-type"]: "text/plain"
@@ -142,21 +129,36 @@ class App extends tbsp.Blueprint
 	--- Find page handler for a URL and process a request
 	-- @tparam cqueues.socket stream Incoming stream to handle
 	process: (stream)=>
-		request = Request(stream, self)
+		routes = @routes
+		request = Request stream, self
+		response = Response stream, self, request
+		path = request.headers\get ":path"
+		blueprints = @blueprints
+
+		while true
+			local has_blueprint
+			for route in *blueprints
+				rt_path_len = #route.path
+				if path\sub(1, rt_path_len) == route.path and
+						path\sub(rt_path_len + 1, rt_path_len + 1) == "/"
+					-- path matches that of a blueprint, get a sub-path and
+					-- pass to blueprint
+					has_blueprint = true
+					path = path\sub rt_path_len + 1
+					blueprints = route.blueprint.blueprints
+					routes = route.blueprint.routes
+			break if not has_blueprint
+
 		ok, err = pcall ->
-			path = request.headers\get ":path"
-			for route in *@routes
+			for route in *routes
 				if path\match route.path
-					-- ::TODO:: get data from route.handler(), add JWT to the
-					-- cookies, then flush response
-					request\write_response route.handler(request,
-						path\match route.path)
-					break
+					route.handler response, request, path\match route.path
+					return
 
 			error RouteNotFoundError(path, request)
 		if not ok
-			@handle_error err, request
-	
+			@handle_error err, request, response
+
 	--- Start listening to incoming requests
 	run: =>
 		@cq\loop!
@@ -179,9 +181,9 @@ App\register_handler "keyfile", (keyfile)=>
 		error "Key file not found: #{keyfile}"
 
 App\error_handler RouteNotFoundError, (err)=>
-	html_response "<h1>#{err}</h1>", 404
+	@write_response html_response "<h1>#{err}</h1>", 404
 
 App\error_handler StaticFileNotFoundError, (err)=>
-	html_response "<h1>#{err}</h1>", 404
+	@write_response html_response "<h1>#{err}</h1>", 404
 
 return {:App}

@@ -9,7 +9,7 @@ import App from require "tbsp"
 import html_response from require "tbsp.response"
 
 app\route "/hello/(%S+)", (page)=>
-	html_response "Hello world, you loaded #{page}", 200
+	@write_response html_response("Hello world, you loaded #{page}", 200)
 
 app\set "certfile", "ssl/cert.pem"
 app\set "keyfile", "ssl/key.pem"

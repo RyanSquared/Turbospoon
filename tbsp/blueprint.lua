@@ -5,27 +5,33 @@ do
     handlers = { },
     errorhandlers = { },
     route = function(self, path, handler)
-      self.logger:debug(1, "Registering route %q", path)
       return table.insert(self.routes, 1, {
         path = path,
         handler = handler
       })
     end,
+    add_blueprint = function(self, blueprint)
+      return table.insert(self.blueprints, 1, {
+        path = blueprint.path,
+        blueprint = blueprint
+      })
+    end,
     error_handler = function(self, err, handler)
-      self.logger:debug(1, "Registering error handler %s", err.__name or err)
       self.errorhandlers[err] = handler
     end
   }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
-    __init = function(self)
+    __init = function(self, path)
+      if path == nil then
+        path = "/"
+      end
+      self.blueprints = { }
       self.routes = { }
-      self.handlers = setmetatable({ }, {
-        __index = Blueprint.handlers
-      })
       self.errorhandlers = setmetatable({ }, {
         __index = Blueprint.errorhandlers
       })
+      self.path = path
     end,
     __base = _base_0,
     __name = "Blueprint"

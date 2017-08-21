@@ -5,51 +5,7 @@ local http = {
 local Request
 do
   local _class_0
-  local _base_0 = {
-    make_session_cookie = function(self, cookie, age)
-      if age == nil then
-        age = 60 * 60 * 24 * 28
-      end
-      self.cookies.session = {
-        key = "session",
-        value = self.app.jwt:encode(self.cookies.session),
-        max_age = age,
-        http_only = true
-      }
-    end,
-    write_headers = function(self, status, headers)
-      if headers == nil then
-        headers = http.headers.new()
-      end
-      assert(status)
-      local headers_mt = getmetatable(headers)
-      if headers_mt ~= http.headers.mt then
-        local new_headers = http.headers.new()
-        for k, v in pairs(headers) do
-          new_headers:append(k, v)
-        end
-        headers = new_headers
-      end
-      if not headers:has("content-type") then
-        headers:append("content-type", "text/plain")
-      end
-      headers:upsert(":status", tostring(status))
-      return self.stream:write_headers(headers, self.method == "HEAD")
-    end,
-    write_body = function(self, text)
-      if self.method == "HEAD" then
-        return 
-      end
-      return self.stream:write_chunk(tostring(text), true)
-    end,
-    write_response = function(self, text, status, headers)
-      if status == nil then
-        status = 200
-      end
-      self:write_headers(status, headers)
-      return self:write_body(text)
-    end
-  }
+  local _base_0 = { }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
     __init = function(self, stream, tbsp_app)
