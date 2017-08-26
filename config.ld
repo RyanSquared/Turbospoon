@@ -10,7 +10,10 @@ topics = {
 }
 file = {
 	'tbsp';
-	exclude = {'tbsp/errors/init.moon'}
+	exclude = {
+		'tbsp/errors';
+		'tbsp/data/init.moon';
+	};
 }
 all = true
 format = 'markdown'
